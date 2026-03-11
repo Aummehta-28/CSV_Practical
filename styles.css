@@ -1,0 +1,57 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 30px;
+    background-color: #f5f7fa;
+}
+
+h2{
+    margin-bottom: 20px;
+}
+
+
+input{
+    padding:10px;
+    margin-bottom:10px;
+    margin-right:5px;
+    border:1px solid #ccc;
+    border-radius:4px;
+}
+
+span{
+    font-size: 30px;
+    margin-right:5px;
+}
+
+button{
+    background-color:rgb(45, 162, 234);
+    color:white;
+    padding:10px 14px;
+    margin-bottom:10px;
+    margin-right:5px;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+    
+}
+
+
+table{
+    width:100%;
+    border-collapse: collapse;
+    margin-top:20px;
+    background:white;
+}
+
+th{
+    cursor: pointer;
+}
+
+
+#numInput{
+    width:60px;
+    padding:8px;
+    margin-bottom:10px;
+    
+}
+
+
