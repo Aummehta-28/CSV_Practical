@@ -38,15 +38,22 @@ button{
 table{
     width:100%;
     border-collapse: collapse;
+    border: 1px solid black;
     margin-top:20px;
     background:white;
 }
 
 th{
     cursor: pointer;
+    border-collapse: collapse;
+    border: 1px solid black;
 }
 
-
+td{
+    cursor: pointer;
+    border-collapse: collapse;
+    border: 1px solid black;
+}
 #numInput{
     width:60px;
     padding:8px;

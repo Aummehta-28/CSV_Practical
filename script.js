@@ -10,82 +10,166 @@ const pageBtn = document.querySelector("#submit");
 const rowBtn = document.querySelector("#rows");
 const rowInput = document.querySelector("#rowInput")
 
-let startIndex=0;
-let currentPage =1;
+const searchBtn = document.querySelector("#searchText")
+const resetBtn = document.querySelector("#reset")
+let startIndex = 0;
+let currentPage = 1;
+let sortDirection = "asc"
+let csvJson;
 
 fileInput.addEventListener("change", handleFile);
 
-rowBtn.addEventListener("click",()=>{
-    let rowsPerPage ;
-    if(Number(rowInput.value)){
-        rowsPerPage=Number(rowInput.value);
-    }else{
-        rowsPerPage=10;
-    }
+rowInput.addEventListener("change", handleRows);
+
+nextBtn.addEventListener("click", handleNextBtn);
+
+prevBtn.addEventListener("click", handlePrevBtn);
+
+pageBtn.addEventListener("click", handlePageBtn);
+
+thead.addEventListener("click", handleSort);
+
+searchBtn.addEventListener("change", handleSearch);
+
+resetBtn.addEventListener("click", handleReset);
+
+tbody.addEventListener("click", handlePopup);
+
+
+function handleRows() {
+    let rowsPerPage = setrows();
 
     let endIndex = startIndex + rowsPerPage;
-    
-    currentPage = Math.ceil(startIndex / rowsPerPage) +1;
+
+    currentPage = Math.ceil(startIndex / rowsPerPage) + 1;
     input.value = currentPage;
 
-    let currentPageData = csvJson.slice(startIndex,endIndex);
+    let currentPageData = csvJson.slice(startIndex, endIndex);
     displayTable(currentPageData);
-})
+}
 
-nextBtn.addEventListener("click", ()=>{
+function handleNextBtn() {
 
     currentPage++;
-    input.value =currentPage;
-    let rowsPerPage ;
-    if(Number(rowInput.value)){
-        rowsPerPage=Number(rowInput.value);
-    }else{
-        rowsPerPage=10;
-    }
-    startIndex =startIndex + rowsPerPage; 
+    input.value = currentPage;
+    let rowsPerPage = setrows();
+    startIndex = startIndex + rowsPerPage;
     endIndex = startIndex + rowsPerPage;
 
-    let currentPageData = csvJson.slice(startIndex,endIndex);
+    let currentPageData = csvJson.slice(startIndex, endIndex);
     displayTable(currentPageData);
 
-})
+}
 
-prevBtn.addEventListener("click",()=>{
+function handlePrevBtn() {
     currentPage--;
-    if(currentPage<1){
+    if (currentPage < 1) {
         return;
     }
-    input.value =currentPage;
-   
-    let rowsPerPage ;
-    if(Number(rowInput.value)){
-        rowsPerPage=Number(rowInput.value);
-    }else{
-        rowsPerPage=10;
-    } 
-    
+    input.value = currentPage;
+
+    let rowsPerPage = setrows();
+
     startIndex = startIndex - rowsPerPage;
-    if(startIndex <0){
-        startIndex =0;
+    if (startIndex < 0) {
+        startIndex = 0;
     }
     endIndex = startIndex + rowsPerPage;
 
-    let currentPageData = csvJson.slice(startIndex,endIndex);
+    let currentPageData = csvJson.slice(startIndex, endIndex);
     displayTable(currentPageData);
-})
+}
 
-pageBtn.addEventListener("click" , ()=>{
-    let rowsPerPage ;
-    if(Number(rowInput.value)){
-        rowsPerPage=Number(rowInput.value);
-    }else{
-        rowsPerPage=10;
-    } 
-    startIndex = (Number(numInput.value) -1 )* rowsPerPage;
+function handlePageBtn() {
+    let rowsPerPage = setrows();
+    startIndex = (Number(numInput.value) - 1) * rowsPerPage;
     endIndex = startIndex + rowsPerPage;
-    let currentPageData = csvJson.slice(startIndex,endIndex);
+    let currentPageData = csvJson.slice(startIndex, endIndex);
     displayTable(currentPageData);
-})
+}
+
+function handleSort(event) {
+    let columnName = event.target.innerHTML;
+
+    csvJson.sort((a, b) => {
+        let valueA = a[columnName];
+        let valueB = b[columnName];
+
+        if (!isNaN(valueA)) {
+            valueA = parseInt(valueA);
+            valueb = parseInt(valueB);
+            if (sortDirection === "asc") {
+                return valueA - valueB;
+            } else {
+                return valueB - valueA;
+            }
+        } else {
+            if (sortDirection === "asc") {
+                return valueA.localeCompare(valueB);
+            } else {
+                return valueB.localeCompare(valueA);
+            }
+        }
+    })
+    if (sortDirection === "asc") {
+        sortDirection = "des";
+    } else {
+        sortDirection = "asc";
+    }
+
+    currentPage = 1;
+    input.value = 1;
+    startIndex = 0;
+    let rowsPerPage = setrows();
+    let endIndex = startIndex + rowsPerPage;
+    let currentPageData = csvJson.slice(startIndex, endIndex);
+    displayTable(currentPageData);
+}
+
+function setrows() {
+
+    if (Number(rowInput.value)) {
+        return Number(rowInput.value);
+    } else {
+        return 10;
+    }
+}
+
+function handleSearch() {
+    searchValue = searchBtn.value;
+
+
+    csvJson = []
+    for (let obj of fulldata) {
+        for (let value of Object.values(obj)) {
+            if (value.toLowerCase().includes(searchValue)) {
+                csvJson.push(obj);
+                break;
+            }
+        }
+    }
+    currentPage = 1;
+    input.value = 1;
+    startIndex = 0;
+    let rowsPerPage = setrows();
+    let endIndex = startIndex + rowsPerPage;
+    let currentPageData = csvJson.slice(startIndex, endIndex);
+
+    displayTable(currentPageData)
+}
+
+function handleReset() {
+    searchBtn.value="";
+
+    let currentPageData = original.slice(0,10);
+    csvJson=original;
+    displayTable(currentPageData);
+}
+
+function handlePopup(event){
+    let row= event.target.closest("tr");
+    console.log(row)
+}
 
 function handleFile(event) {
 
@@ -97,8 +181,10 @@ function handleFile(event) {
 
     reader.onload = function (e) {
         const csvText = e.target.result;
-        csvJson = csvToJson(csvText)
-        const currentPageData = csvJson.slice(0,10);
+        fulldata = csvToJson(csvText)
+        original=[...fulldata]
+        csvJson = fulldata;
+        const currentPageData = csvJson.slice(0, 10);
         displayTable(currentPageData);
 
     };
