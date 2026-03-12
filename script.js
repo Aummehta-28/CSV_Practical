@@ -12,10 +12,22 @@ const rowInput = document.querySelector("#rowInput")
 
 const searchBtn = document.querySelector("#searchText")
 const resetBtn = document.querySelector("#reset")
+
+const controls = document.querySelector("#controls");
+const popup = document.querySelector("#popup")
+const popChild = document.querySelector("#popchild")
+const closeBtn = document.querySelector("#close")
+
+const columnBtn = document.querySelector("#columns");
+const columnList = document.querySelector("#columnlist")
+
 let startIndex = 0;
 let currentPage = 1;
-let sortDirection = "asc"
+
 let csvJson;
+let visibleColumn;
+let allColumns;
+let sortPos = {}
 
 fileInput.addEventListener("change", handleFile);
 
@@ -35,6 +47,10 @@ resetBtn.addEventListener("click", handleReset);
 
 tbody.addEventListener("click", handlePopup);
 
+closeBtn.addEventListener("click", handleClose);
+
+columnBtn.addEventListener("click", handleColumn);
+
 
 function handleRows() {
     let rowsPerPage = setrows();
@@ -49,23 +65,29 @@ function handleRows() {
 }
 
 function handleNextBtn() {
-
+    let rowsPerPage = setrows();
+    
+    if (currentPage > csvJson.length / rowsPerPage) {
+        return;
+    }
     currentPage++;
     input.value = currentPage;
-    let rowsPerPage = setrows();
+
     startIndex = startIndex + rowsPerPage;
     endIndex = startIndex + rowsPerPage;
-
+    
     let currentPageData = csvJson.slice(startIndex, endIndex);
+
     displayTable(currentPageData);
 
 }
 
 function handlePrevBtn() {
-    currentPage--;
-    if (currentPage < 1) {
+    if (currentPage <= 1) {
         return;
     }
+    currentPage--;
+
     input.value = currentPage;
 
     let rowsPerPage = setrows();
@@ -81,7 +103,19 @@ function handlePrevBtn() {
 }
 
 function handlePageBtn() {
+
     let rowsPerPage = setrows();
+    if (numInput.value > csvJson.length / rowsPerPage) {
+        numInput.value = csvJson.length / rowsPerPage
+    }
+    if (numInput.value < 1) {
+        currentPage = 1;
+        input.value = 1;
+        return;
+    }
+
+    currentPage = Number(numInput.value);
+
     startIndex = (Number(numInput.value) - 1) * rowsPerPage;
     endIndex = startIndex + rowsPerPage;
     let currentPageData = csvJson.slice(startIndex, endIndex);
@@ -90,32 +124,32 @@ function handlePageBtn() {
 
 function handleSort(event) {
     let columnName = event.target.innerHTML;
-
+    if (sortPos[columnName] === "asc") {
+        sortPos[columnName] = "desc";
+    } else {
+        sortPos[columnName] = "asc";
+    }
     csvJson.sort((a, b) => {
         let valueA = a[columnName];
         let valueB = b[columnName];
 
         if (!isNaN(valueA)) {
             valueA = parseInt(valueA);
-            valueb = parseInt(valueB);
-            if (sortDirection === "asc") {
+            valueB = parseInt(valueB);
+            if (sortPos[columnName] === "asc") {
                 return valueA - valueB;
             } else {
                 return valueB - valueA;
             }
         } else {
-            if (sortDirection === "asc") {
+            if (sortPos[columnName] === "asc") {
                 return valueA.localeCompare(valueB);
             } else {
                 return valueB.localeCompare(valueA);
             }
         }
     })
-    if (sortDirection === "asc") {
-        sortDirection = "des";
-    } else {
-        sortDirection = "asc";
-    }
+
 
     currentPage = 1;
     input.value = 1;
@@ -136,9 +170,9 @@ function setrows() {
 }
 
 function handleSearch() {
-    searchValue = searchBtn.value;
+    searchValue = searchBtn.value.toLowerCase();
 
-
+    
     csvJson = []
     for (let obj of fulldata) {
         for (let value of Object.values(obj)) {
@@ -159,16 +193,80 @@ function handleSearch() {
 }
 
 function handleReset() {
-    searchBtn.value="";
-
-    let currentPageData = original.slice(0,10);
-    csvJson=original;
+    searchBtn.value = "";
+    input.value=1;
+    currentPage=1;
+    rowInput.value=10
+    let currentPageData = fulldata.slice(0, 10);
+    csvJson = [...fulldata];
     displayTable(currentPageData);
 }
 
-function handlePopup(event){
-    let row= event.target.closest("tr");
-    console.log(row)
+function handleColumn() {
+    if(columnList.style.display==="none"){
+        
+        columnList.style.display= "block";
+        columnList.innerHTML=""
+    }else{
+        columnList.style.display= "none";
+    }
+
+    let headers = Object.keys(csvJson[0]);
+
+
+    for (let i = 0; i < headers.length; i++) {
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="checkbox" value="${headers[i]}" checked> ${headers[i]} `;
+        columnList.appendChild(label)
+    }
+
+    columnList.addEventListener("click", (e) => {
+        if (e.target.type === "checkbox") {
+            visibleColumn=[]
+            let a=document.querySelectorAll('input[type="checkbox"]');
+            a.forEach((input)=>{
+                if(input.checked){
+                    visibleColumn.push(input.value);
+                }
+            })
+            
+
+        }
+   
+        let rowsPerPage = setrows();
+        let endIndex = startIndex + rowsPerPage;
+        let currentPageData = csvJson.slice(startIndex, endIndex);
+        displayTable(currentPageData);
+    })
+
+}
+
+function handlePopup(event) {
+    popChild.innerHTML = ""
+    let tableRow = event.target.closest("tr");
+    let headers = Object.keys(csvJson[0]);
+
+    const obj = {};
+
+
+    for (let i = 0; i < tableRow.cells.length; i++) {
+        let cell = tableRow.cells[i];
+        obj[headers[i]] = cell.textContent;
+
+    }
+
+    for (const [key, value] of Object.entries(obj)) {
+        const div = document.createElement("div");
+        div.innerHTML = `${key} :${value}`
+        popChild.appendChild(div);
+    }
+    popup.style.display = "block";
+    document.querySelector("#tableDisplay").classList.add("blur")
+}
+function handleClose() {
+
+    popup.style.display = "none";
+    document.querySelector("#tableDisplay").classList.remove("blur")
 }
 
 function handleFile(event) {
@@ -182,11 +280,17 @@ function handleFile(event) {
     reader.onload = function (e) {
         const csvText = e.target.result;
         fulldata = csvToJson(csvText)
-        original=[...fulldata]
-        csvJson = fulldata;
+        visibleColumn = Object.keys(fulldata[0]);
+        original = [...fulldata]
+        csvJson = [...fulldata];
         const currentPageData = csvJson.slice(0, 10);
         displayTable(currentPageData);
 
+    };
+
+    reader.onloadend = function () {
+        controls.style.display = "block";
+        popup.style.display = "none";
     };
 
 }
@@ -212,13 +316,13 @@ function csvToJson(csvText) {
 function displayTable(csvJson) {
     tbody.innerHTML = "";
     thead.innerHTML = "";
-    const headers = csvJson[0];
-    const headerKeys = Object.keys(headers);
+    // const headers = csvJson[0];
+    // const headerKeys = Object.keys(headers);
 
     const tr = document.createElement("tr");
-    headerKeys.forEach((keys) => {
+    visibleColumn.forEach((value) => {
         const th = document.createElement("th");
-        th.innerHTML = keys;
+        th.innerHTML = value;
         tr.appendChild(th);
     })
 
@@ -226,12 +330,12 @@ function displayTable(csvJson) {
 
     csvJson.forEach((obj) => {
         const tr = document.createElement("tr");
-        Object.values(obj).forEach((value) => {
+        visibleColumn.forEach((col) => {
             const td = document.createElement("td");
-            td.innerHTML = value;
+            td.innerHTML = obj[col];
             tr.appendChild(td);
         })
         tbody.appendChild(tr)
     })
-
 }
+

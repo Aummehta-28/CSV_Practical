@@ -10,31 +10,47 @@
 
 <body>
 
-    <h2>Upload CSV File</h2>
-
-
-    <input type="file" id="csvFile" accept=".csv">
-     <button id="prev">Prev</button>
-    <button id="next">Next</button>
- 
-
-   
-        <input type="number" value='1' id="numInput">
-        
-   
-    <button id="submit">Page No</button>
-
-    <input type="number" id="rowInput">
-    <button id="rows">Rows</button>
-
-    <input type ="text" placeholder="Search your query" id="searchText">
-    <button id="search">Search</button>
-    <button id="reset">Reset</button>
-    <table>
-        <thead id="thead"></thead>
-        <tbody id="tbody"></tbody>
-    </table>
     
+    <input type="file" id="csvFile" accept=".csv">
+    <div id="controls" style="display: none;">
+        <button id="columns">Columns</button>
+        <div id="columnlist" style="display: none;" ></div>
+        
+        <button id="prev">Prev</button>
+        <button id="next">Next</button>
+
+
+
+        <input type="number" value='1' id="numInput">
+
+        
+        <button id="submit">Page No</button>
+
+        <select id="rowInput">
+            <option value="10" selected>10 rows</option>
+            <option value="20">20 rows</option>
+            <option value="50">50 rows</option>
+            <option value="100">100 rows</option>
+            <option value="200">200 rows</option>
+        </select>
+        
+        <input type="text" placeholder="Search your query" id="searchText">
+        
+        <button id="reset">Reset</button>
+        <div id="tableDisplay">
+             <table >
+            <thead id="thead"></thead>
+            <tbody id="tbody"></tbody>
+        </table>
+        </div>
+       
+    </div>
+    <div id="popup" style="display: none;">
+      <button id="close">X</button>
+      <div id="popchild">
+
+      </div>
+    </div>
     <script src="script.js"></script>
 </body>
 
