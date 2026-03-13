@@ -1,107 +1,117 @@
-body{
+body {
     font-family: Arial, Helvetica, sans-serif;
     margin: 30px;
     background-color: #f5f7fa;
 }
  
-h2{
+h2 {
     margin-bottom: 20px;
 }
  
  
-input{
-    padding:10px;
-    margin-bottom:10px;
-    margin-right:5px;
-    border:1px solid #ccc;
-    border-radius:4px;
+input {
+    padding: 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
  
-span{
-    font-size: 30px;
-    margin-right:5px;
+ 
+span {
+    font-size: 18px;
+    margin-right: 5px;
+    vertical-align: middle;
 }
  
-button{
-    background-color:rgb(45, 162, 234);
-    color:white;
-    padding:10px 14px;
-    margin-bottom:10px;
-    margin-right:5px;
-    border:none;
-    border-radius:4px;
-    cursor:pointer;
-   
+ 
+button {
+    background-color: rgb(45, 162, 234);
+    color: white;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+ 
 }
-#rowInput{
+ 
+#rowInput {
     padding: 10px;
 }
  
-table{
-    width:100%;
+table {
+    width: 100%;
     border-collapse: collapse;
     border: 1px solid black;
-    margin-top:20px;
-    background:white;
+    margin-top: 20px;
+    background: white;
     padding: 10px;
     max-height: 400px;
     overflow-y: auto;
-    
+ 
 }
-#tableDisplay{
+ 
+#tableDisplay {
     max-height: 800px;
     overflow-y: auto;
 }
  
-th{
+th {
     cursor: pointer;
     border-collapse: collapse;
     border: 1px solid black;
     padding: 10px;
-    background-color:rgb(45, 171, 249);
-    color:white;
+    background-color: rgb(45, 171, 249);
+    color: white;
     position: sticky;
-    top:0;
+    top: 0;
 }
  
-td{
+td {
     cursor: pointer;
     border-collapse: collapse;
     border: 1px solid black;
     padding: 10px;
 }
-#numInput{
-    width:60px;
-    padding:8px;
-    margin-bottom:10px;
-   
+ 
+#numInput {
+    width: 60px;
+    padding: 8px;
+    margin-bottom: 10px;
+ 
 }
-
-#popup{
+ 
+#popup {
     display: flex;
     flex-direction: column;
     position: absolute;
-    top:30%;
-    left:40%;
-    padding:30px;
+    top: 30%;
+    left: 40%;
+    padding: 30px;
     background-color: white;
-    color:black;
-    justify-content: center; 
+    color: black;
+    justify-content: center;
     align-items: center;
     backdrop-filter: blur(10px);
     z-index: 1;
-    gap:10px;
+    gap: 10px;
     font-size: 20px;
 }
-#popchild >div{
+ 
+#popchild>div {
     margin-bottom: 10px;
 }
-#controls{
-    position:relative;
+ 
+#controls {
+    position: relative;
 }
+ 
 tbody tr:nth-child(even) {
     background-color: #f2f2f2;
 }
-.blur{
-    filter:blur(2px);
+ 
+.blur {
+    filter: blur(2px);
 }

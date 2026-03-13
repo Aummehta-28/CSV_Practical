@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
+ 
 <body>
-
-    
+ 
+    <h2> CSV Data Explorer</h2>
     <input type="file" id="csvFile" accept=".csv">
     <div id="controls" style="display: none;">
         <button id="columns">Columns</button>
         <div id="columnlist" style="display: none;" ></div>
-        
+       
         <button id="prev">Prev</button>
-        <button id="next">Next</button>
-
-
-
         <input type="number" value='1' id="numInput">
-
-        
-        <button id="submit">Page No</button>
-
+        <span id="totalpages" >/ 100</span>
+        <button id="next">Next</button>
+ 
+       
+       
+     
+ 
         <select id="rowInput">
             <option value="10" selected>10 rows</option>
             <option value="20">20 rows</option>
@@ -33,9 +32,9 @@
             <option value="100">100 rows</option>
             <option value="200">200 rows</option>
         </select>
-        
+       
         <input type="text" placeholder="Search your query" id="searchText">
-        
+       
         <button id="reset">Reset</button>
         <div id="tableDisplay">
              <table >
@@ -48,10 +47,10 @@
     <div id="popup" style="display: none;">
       <button id="close">X</button>
       <div id="popchild">
-
+ 
       </div>
     </div>
-    <script src="script.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
-
+ 
 </html>
