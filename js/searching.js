@@ -1,5 +1,5 @@
 import { state } from "./state.js";
-import { displayTable } from "./table.js";
+import { showCurrentPageData } from "./table.js";
 import { dom } from "./dom.js";
 import { savetolocal } from "./storage.js";
 export function handleSearch() {
@@ -8,21 +8,38 @@ export function handleSearch() {
     // Search if any row value matches the search query.
 
     state.csvJson = []
-    for (let obj of state.fulldata) {
-        for (let value of Object.values(obj)) {
-            if (value.toLowerCase().includes(state.searchValue)) {
+    state.fulldata.forEach((obj) => {
+        for (let col of state.visibleColumn) {
+       
+            const value = obj[col];
+ 
+            if (value && value.toLowerCase().includes(state.searchValue)) {
                 state.csvJson.push(obj);
                 break;
             }
         }
+    });
+    const column = Object.keys(state.sortPos)[0];
+    if (column) {
+        const order = state.sortPos[column];
+        state.csvJson.sort((a, b) => {
+            let valueA = a[column];
+            let valueB = b[column];
+ 
+            if (!isNaN(valueA)) {
+                valueA = parseInt(valueA);
+                valueB = parseInt(valueB);
+                return order==="asc" ? valueA -valueB : valueB -valueA;
+            } else {
+                return order=== "asc" ? valueA.localeCompare(valueB):valueB.localeCompare(valueA) ;
+            }
+        })
     }
     state.currentPage = 1;
     dom.numInput.value = 1;
     state.startIndex = 0;
-    let rowsPerPage = Number(dom.rowInput.value);
-    let endIndex = state.startIndex + rowsPerPage;
-    let currentPageData = state.csvJson.slice(state.startIndex, endIndex);
+    const rowsPerPage = Number(dom.rowInput.value);
     dom.totalPages.textContent = `/ ${Math.ceil(state.csvJson.length / rowsPerPage)}`;
-    displayTable(currentPageData)
+    showCurrentPageData();
     savetolocal();
 }

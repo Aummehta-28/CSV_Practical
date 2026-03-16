@@ -6,8 +6,8 @@ import { dom } from "./dom.js";
 // Display indivudial Row and create a popup for that row
 export function handlePopup(event) {
     dom.popChild.innerHTML = ""
-    let tableRow = event.target.closest("tr");
-    let headers = Object.keys(state.csvJson[0]);
+    const tableRow = event.target.closest("tr");
+    const headers = Object.keys(state.csvJson[0]);
 
     const obj = {};
 

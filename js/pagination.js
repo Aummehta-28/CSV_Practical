@@ -2,12 +2,12 @@
 
 import { state } from "./state.js";
 import { dom } from "./dom.js";
-import { displayTable } from "./table.js";
+import { showCurrentPageData } from "./table.js";
 import { savetolocal } from "./storage.js";
 
 export function handleNextBtn() {
   
-    let rowsPerPage = Number(dom.rowInput.value);
+    const rowsPerPage = Number(dom.rowInput.value);
     
     // Handles the next Page for out of range Page
     if (state.currentPage >= state.csvJson.length / rowsPerPage) {
@@ -17,11 +17,7 @@ export function handleNextBtn() {
     dom.numInput.value = state.currentPage;
    
     state.startIndex = state.startIndex + rowsPerPage;
-    let endIndex = state.startIndex + rowsPerPage;
-
-    let currentPageData = state.csvJson.slice(state.startIndex, endIndex);
-
-    displayTable(currentPageData);
+    showCurrentPageData();
     savetolocal();
 
 }
@@ -36,7 +32,7 @@ export function handlePrevBtn() {
 
     dom.numInput.value = state.currentPage;
 
-    let rowsPerPage = Number(dom.rowInput.value);
+    const rowsPerPage = Number(dom.rowInput.value);
 
     state.startIndex = state.startIndex - rowsPerPage;
 
@@ -44,10 +40,7 @@ export function handlePrevBtn() {
     if (state.startIndex < 0) {
         state.startIndex = 0;
     }
-    let endIndex = state.startIndex + rowsPerPage;
-
-    let currentPageData = state.csvJson.slice(state.startIndex, endIndex);
-    displayTable(currentPageData);
+    showCurrentPageData();
     savetolocal();
 }
 
@@ -55,7 +48,7 @@ export function handlePrevBtn() {
 // It moves to particular page that user inputs it
 export function handlePageBtn() {
 
-    let rowsPerPage = Number(dom.rowInput.value);
+    const rowsPerPage = Number(dom.rowInput.value);
     if (dom.numInput.value > state.csvJson.length / rowsPerPage) {
         dom.numInput.value = state.csvJson.length / rowsPerPage
     }
@@ -69,9 +62,7 @@ export function handlePageBtn() {
     state.currentPage = Number(dom.numInput.value);
 
     state.startIndex = (Number(dom.numInput.value) - 1) * rowsPerPage;
-    let endIndex = state.startIndex + rowsPerPage;
-    let currentPageData = state.csvJson.slice(state.startIndex, endIndex);
-    displayTable(currentPageData);
+    showCurrentPageData();
     savetolocal();
 }
 
@@ -79,16 +70,15 @@ export function handlePageBtn() {
 // Display no of rows that user selects
 
 export function handleRows() {
-    let rowsPerPage = Number(dom.rowInput.value);
+    const rowsPerPage = Number(dom.rowInput.value);
 
     state.currentPage = Math.floor(state.startIndex / rowsPerPage) + 1;
     dom.numInput.value = state.currentPage;
 
     state.startIndex = (state.currentPage - 1) * rowsPerPage;
 
-    let endIndex = state.startIndex + rowsPerPage;
+    
     dom.totalPages.textContent = `/ ${Math.ceil(state.csvJson.length / rowsPerPage)}`;
-    let currentPageData = state.csvJson.slice(state.startIndex, endIndex);
-    displayTable(currentPageData);
+    showCurrentPageData();
     savetolocal();
 }

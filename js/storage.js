@@ -14,7 +14,7 @@ export function savetolocal() {
 
 export function getlocal() {
     const data = localStorage.getItem("csvState");
-    console.log(data)
+    
     if (data) {
         const saveddata  = JSON.parse(data);
         state.fulldata = saveddata .fulldata;
@@ -25,7 +25,7 @@ export function getlocal() {
         dom.searchBtn.value = saveddata .searchtext;
         state.startIndex = saveddata .startIndex;
         dom.numInput.value = saveddata.currentPage;
-        let endIndex = state.startIndex + Number(dom.rowInput.value);
+        const endIndex = state.startIndex + Number(dom.rowInput.value);
         const currentPageData = state.csvJson.slice(state.startIndex, endIndex);
         dom.totalPages.textContent = `/ ${Math.ceil(state.csvJson.length / Number(dom.rowInput.value))}`;
         state.visibleColumn = Object.keys(state.csvJson[0]);

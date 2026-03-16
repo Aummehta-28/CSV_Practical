@@ -10,7 +10,7 @@ export function handleReset() {
     dom.numInput.value = 1;
     state.currentPage = 1;
     dom.rowInput.value = 10
-    let currentPageData = state.fulldata.slice(0, 10);
+    const currentPageData = state.fulldata.slice(0, 10);
     state.csvJson = [...state.fulldata];
     dom.totalPages.textContent = `/ ${Math.ceil(state.csvJson.length / 10)}`;
     displayTable(currentPageData);

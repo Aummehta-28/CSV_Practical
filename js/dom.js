@@ -1,5 +1,3 @@
-
-
 const dom = {
     fileInput: document.querySelector("#csvFile"),
     thead: document.querySelector("#thead"),
